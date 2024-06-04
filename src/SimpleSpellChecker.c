@@ -113,6 +113,13 @@ Array_list_ptr candidate_list_simple(Fsm_morphological_analyzer_ptr fsm, char *w
     return candidates;
 }
 
+/**
+ * A constructor of {@link SimpleSpellChecker} class which takes an {@link FsmMorphologicalAnalyzer} as an input and
+ * assigns it to the fsm variable. Then it creates a new {@link SpellCheckerParameter} and assigns it to the parameter.
+ * Finally, it calls the loadDictionaries method.
+ *
+ * @param fsm {@link FsmMorphologicalAnalyzer} type input.
+ */
 Simple_spell_checker_ptr create_simple_spell_checker(Fsm_morphological_analyzer_ptr fsm) {
     Simple_spell_checker_ptr result = malloc_(sizeof(Simple_spell_checker), "create_simple_spell_checker");
     result->fsm = fsm;
@@ -122,6 +129,10 @@ Simple_spell_checker_ptr create_simple_spell_checker(Fsm_morphological_analyzer_
     return result;
 }
 
+/**
+ * Frees memory allocated for a SimpleSpellChecker object. Deallocates memory for merged words and split words lists.
+ * @param spell_checker SpellChecker object to be deallocated.
+ */
 void free_simple_spell_checker(Simple_spell_checker_ptr spell_checker) {
     free_spell_check_parameter(spell_checker->parameter);
     free_hash_map2(spell_checker->merged_words, free_, free_);
@@ -129,6 +140,11 @@ void free_simple_spell_checker(Simple_spell_checker_ptr spell_checker) {
     free_(spell_checker);
 }
 
+/**
+ * Loads the merged word list from the merged words file. Reads the input file line by line. Each line consists of
+ * three words, the first two words are to be merged words and the third word is the merged version of those two words.
+ * @return Hash map containing the merged words. Key is the two words separated with space, value if the merged word.
+ */
 Hash_map_ptr load_merged_dictionary(){
     Hash_map_ptr result = create_string_hash_map();
     Array_list_ptr lines = read_lines("merged.txt");
@@ -144,6 +160,11 @@ Hash_map_ptr load_merged_dictionary(){
     return result;
 }
 
+/**
+ * Loads the split word list from the merged words file. Reads the input file line by line. Each line consists of
+ * three words, the first word is the split version of two words, second and third words are the split words.
+ * @return Hash map containing the split words. Key is the split word, value is the two split words separated with space.
+ */
 Hash_map_ptr load_split_dictionary(){
     Hash_map_ptr result = create_string_hash_map();
     Array_list_ptr lines = read_lines("split.txt");
@@ -207,6 +228,13 @@ bool forced_backward_merge_check(Hash_map_ptr merged_words,
     return false;
 }
 
+/**
+ * Returns the correct form of a given word by looking it up in the provided dictionary.
+ *
+ * @param word   the name of the word to look up in the dictionary
+ * @param dictionary the dictionary to use for looking up the word
+ * @return the correct form of the word, as stored in the dictionary, or null if the word is not found
+ */
 char *get_correct_form_from_list(char *word, Hash_map_ptr dictionary) {
     if (hash_map_contains(dictionary, word)){
         return hash_map_get(dictionary, word);

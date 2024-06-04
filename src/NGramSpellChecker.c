@@ -29,6 +29,11 @@ N_gram_spell_checker_ptr create_n_gram_spell_checker(Fsm_morphological_analyzer_
     return result;
 }
 
+/**
+ * Frees memory allocated for an NGramSpellChecker. Deallocates memory for NGram, merged words and split words hash
+ * maps.
+ * @param spell_checker SpellChecker object to be deallocated.
+ */
 void free_n_gram_spell_checker(N_gram_spell_checker_ptr spell_checker) {
     free_spell_check_parameter(spell_checker->parameter);
     free_n_gram(spell_checker->n_gram);
@@ -87,6 +92,13 @@ char * check_analysis_and_set_root_for_word_at_index(N_gram_spell_checker spell_
     return NULL;
 }
 
+/**
+ * Checks the morphological analysis of the given word. If there is no misspelling, it returns
+ * the longest root word of the possible analysis.
+ *
+ * @param word Word to be analyzed.
+ * @return If the word is misspelled, null; otherwise the longest root word of the possible analysis.
+ */
 char *check_analysis_and_set_root(N_gram_spell_checker spell_checker, char *word) {
     Fsm_parse_list_ptr parse_list1 = morphological_analysis(spell_checker.fsm, word);
     if (parse_list1->fsm_parses->size != 0) {

@@ -83,6 +83,10 @@ bool trie_starts_with(Spell_checker_trie_ptr trie, char *prefix) {
     }
 }
 
+/**
+ * Frees memory allocated for spellChecker trie. Calls recursive free trie node method.
+ * @param trie Trei to be deallocated.
+ */
 void free_spell_checker_trie(Spell_checker_trie_ptr trie) {
     free_spell_checker_trie_node(trie->root_node);
     free_(trie);

@@ -57,6 +57,10 @@ char *children_to_string(Spell_checker_trie_node_ptr trie_node) {
     return clone_string(result);
 }
 
+/**
+ * Recursive method to deallocate trie nodes. It calls itself with its children.
+ * @param trie_node Trie node to be deallocated.
+ */
 void free_spell_checker_trie_node(Spell_checker_trie_node_ptr trie_node) {
     free_hash_map(trie_node->children, (void (*)(void *)) free_spell_checker_trie_node);
     free_(trie_node);

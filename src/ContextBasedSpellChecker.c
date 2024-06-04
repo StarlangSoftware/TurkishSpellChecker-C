@@ -10,6 +10,14 @@
 #include "SimpleSpellChecker.h"
 #include "Candidate.h"
 
+/**
+ * A constructor of {@link ContextBasedSpellChecker} class which takes an {@link FsmMorphologicalAnalyzer}, an {@link NGram}
+ * and a {@link SpellCheckerParameter} as inputs. Then, calls its super class {@link NGramSpellChecker} with given inputs.
+ *
+ * @param fsm       {@link FsmMorphologicalAnalyzer} type input.
+ * @param parameter {@link SpellCheckerParameter} type input.
+ * @param n_gram     {@link NGram} type input.
+ */
 Context_based_spell_checker_ptr create_context_based_spell_checker(Fsm_morphological_analyzer_ptr fsm,
                                                                    Spell_checker_parameter_ptr parameter,
                                                                    N_gram_ptr n_gram) {
@@ -23,6 +31,11 @@ Context_based_spell_checker_ptr create_context_based_spell_checker(Fsm_morpholog
     return result;
 }
 
+/**
+ * Frees memory allocated for a SpellChecker. Frees spell checker parameter, N-Gram, merged words and split word hash
+ * maps, the context list hash map.
+ * @param spell_checker SpellChecker object to be deallocated.
+ */
 void free_context_based_spell_checker(Context_based_spell_checker_ptr spell_checker) {
     free_spell_check_parameter(spell_checker->parameter);
     free_n_gram(spell_checker->n_gram);

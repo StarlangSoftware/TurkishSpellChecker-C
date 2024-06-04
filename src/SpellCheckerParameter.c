@@ -21,6 +21,10 @@ Spell_checker_parameter_ptr create_spell_checker_parameter() {
     return result;
 }
 
+/**
+ * Frees memory allocated for SpellCheckerParameter object.
+ * @param spell_check_parameter SpellCheckerParameter to be deallocated.
+ */
 void free_spell_check_parameter(Spell_checker_parameter_ptr spell_check_parameter) {
     free_(spell_check_parameter->domain);
     free_(spell_check_parameter);

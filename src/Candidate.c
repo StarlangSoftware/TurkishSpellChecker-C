@@ -19,6 +19,10 @@ Candidate_ptr create_candidate(const char *name, Operator operator) {
     return result;
 }
 
+/**
+ * Frees memory allocated for a Candidate object.
+ * @param candidate Candidate to be deallocated.
+ */
 void free_candidate(Candidate_ptr candidate) {
     free_(candidate->name);
     free_(candidate);
