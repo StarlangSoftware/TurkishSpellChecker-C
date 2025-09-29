@@ -3,6 +3,7 @@
 //
 
 #include <Memory/Memory.h>
+#include "string.h"
 #include <FileUtils.h>
 #include <Dictionary/Word.h>
 #include "SpellCheckerTrieNode.h"
@@ -48,10 +49,11 @@ void add_trie_node_child(Spell_checker_trie_node_ptr parent,
  * @return a string of characters representing the keys of all child TrieNodes.
  */
 char *children_to_string(Spell_checker_trie_node_ptr trie_node) {
-    char result[MAX_WORD_LENGTH] = "";
+    char result[MAX_WORD_LENGTH] = "", result1[MAX_WORD_LENGTH];
     Array_list_ptr list = key_list(trie_node->children);
     for (int i = 0; i < list->size; i++){
-        sprintf(result, "%s%s", result, (char*) array_list_get(list, i));
+        sprintf(result1, "%s%s", result, (char*) array_list_get(list, i));
+        strcpy(result, result1);
     }
     free_array_list(list, NULL);
     return clone_string(result);
