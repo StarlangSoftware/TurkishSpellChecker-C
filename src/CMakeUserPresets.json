@@ -4,7 +4,6 @@
         "conan": {}
     },
     "include": [
-        "/Users/olcay/Dropbox/nlptoolkit-repositories-c/SpellChecker/cmake-build-debug/conan/build/Debug/generators/CMakePresets.json",
-        "../cmake-build-debug/conan/build/Debug/generators/CMakePresets.json"
+        "/Users/olcay/Dropbox/nlptoolkit-repositories-c/SpellChecker/cmake-build-debug/conan/build/Debug/generators/CMakePresets.json"
     ]
 }
