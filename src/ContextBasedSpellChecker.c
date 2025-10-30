@@ -21,7 +21,7 @@
 Context_based_spell_checker_ptr create_context_based_spell_checker(Fsm_morphological_analyzer_ptr fsm,
                                                                    Spell_checker_parameter_ptr parameter,
                                                                    N_gram_ptr n_gram) {
-    Context_based_spell_checker_ptr result = malloc_(sizeof(Context_based_spell_checker), "create_context_based_spell_checker");
+    Context_based_spell_checker_ptr result = malloc_(sizeof(Context_based_spell_checker));
     result->fsm = fsm;
     result->parameter = parameter;
     result->n_gram = n_gram;
@@ -88,9 +88,9 @@ int damerau_levenshtein_distance(char *first, char *second) {
     }
     int firstLength = word_size(first);
     int secondLength = word_size(second);
-    int** distanceMatrix = malloc_((firstLength + 1) * sizeof(int*), "damerau_levenshtein_distance_1");
+    int** distanceMatrix = malloc_((firstLength + 1) * sizeof(int*));
     for (int i = 0; i < firstLength + 1; i++){
-        distanceMatrix[i] = malloc_((secondLength + 1) * sizeof(int), "damerau_levenshtein_distance_2");
+        distanceMatrix[i] = malloc_((secondLength + 1) * sizeof(int));
     }
     for (int firstIndex = 0; firstIndex <= firstLength; firstIndex++) {
         distanceMatrix[firstIndex][0] = firstIndex;

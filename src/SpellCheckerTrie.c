@@ -10,7 +10,7 @@
  * A constructor of SpellCheckerTrie class which constructs a new SpellCheckerTrie with an empty root node
  */
 Spell_checker_trie_ptr create_spell_checker_trie() {
-    Spell_checker_trie_ptr result = malloc_(sizeof(Spell_checker_trie), "create_spell_checker_trie");
+    Spell_checker_trie_ptr result = malloc_(sizeof(Spell_checker_trie));
     result->root_node = create_spell_checker_trie_node();
     return result;
 }

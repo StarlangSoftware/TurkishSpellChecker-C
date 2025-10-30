@@ -20,7 +20,7 @@
 N_gram_spell_checker_ptr create_n_gram_spell_checker(Fsm_morphological_analyzer_ptr fsm,
                                                      Spell_checker_parameter_ptr parameter,
                                                      N_gram_ptr n_gram) {
-    N_gram_spell_checker_ptr result = malloc_(sizeof(N_gram_spell_checker), "create_n_gram_spell_checker");
+    N_gram_spell_checker_ptr result = malloc_(sizeof(N_gram_spell_checker));
     result->fsm = fsm;
     result->parameter = parameter;
     result->n_gram = n_gram;

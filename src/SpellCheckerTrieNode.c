@@ -11,7 +11,7 @@
  * A constructor of SpellCheckerTrieNode class which constructs a new SpellCheckerTrieNode with an empty children HashMap
  */
 Spell_checker_trie_node_ptr create_spell_checker_trie_node() {
-    Spell_checker_trie_node_ptr result = malloc_(sizeof(Spell_checker_trie_node), "create_spell_checker_trie_node");
+    Spell_checker_trie_node_ptr result = malloc_(sizeof(Spell_checker_trie_node));
     result->children = create_string_hash_map();
     result->is_end_of_word = false;
     return result;

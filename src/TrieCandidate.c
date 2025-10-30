@@ -14,7 +14,7 @@
  * @param current_penalty the currentPenalty associated with the candidate word
  */
 Trie_candidate_ptr create_trie_candidate(char *word, int current_index, double current_penalty) {
-    Trie_candidate_ptr result = malloc_(sizeof(Trie_candidate), "create_trie_candidate");
+    Trie_candidate_ptr result = malloc_(sizeof(Trie_candidate));
     result->name = str_copy(result->name, word);
     result->current_index = current_index;
     result->current_penalty = current_penalty;

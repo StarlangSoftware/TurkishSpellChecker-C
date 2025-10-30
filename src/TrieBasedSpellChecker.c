@@ -22,7 +22,7 @@
 Trie_based_spell_checker_ptr create_trie_based_spell_checker(Fsm_morphological_analyzer_ptr fsm,
                                                              Spell_checker_parameter_ptr parameter,
                                                              N_gram_ptr n_gram) {
-    Trie_based_spell_checker_ptr result = malloc_(sizeof(Trie_based_spell_checker), "create_trie_based_spell_checker");
+    Trie_based_spell_checker_ptr result = malloc_(sizeof(Trie_based_spell_checker));
     result->fsm = fsm;
     result->parameter = parameter;
     result->n_gram = n_gram;

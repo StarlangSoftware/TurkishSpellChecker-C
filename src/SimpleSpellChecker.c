@@ -121,7 +121,7 @@ Array_list_ptr candidate_list_simple(Fsm_morphological_analyzer_ptr fsm, char *w
  * @param fsm {@link FsmMorphologicalAnalyzer} type input.
  */
 Simple_spell_checker_ptr create_simple_spell_checker(Fsm_morphological_analyzer_ptr fsm) {
-    Simple_spell_checker_ptr result = malloc_(sizeof(Simple_spell_checker), "create_simple_spell_checker");
+    Simple_spell_checker_ptr result = malloc_(sizeof(Simple_spell_checker));
     result->fsm = fsm;
     result->parameter = create_spell_checker_parameter();
     result->merged_words = load_merged_dictionary();

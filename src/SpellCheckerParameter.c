@@ -12,7 +12,7 @@
  * the minimum word length is 4.
  */
 Spell_checker_parameter_ptr create_spell_checker_parameter() {
-    Spell_checker_parameter_ptr result = malloc_(sizeof(Spell_checker_parameter), "create_spell_checker_parameter");
+    Spell_checker_parameter_ptr result = malloc_(sizeof(Spell_checker_parameter));
     result->threshold = 0.0;
     result->suffix_check = true;
     result->root_n_gram = true;

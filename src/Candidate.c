@@ -13,7 +13,7 @@
  * @param operator The operator to be applied to the candidate in the spell checking process.
  */
 Candidate_ptr create_candidate(const char *name, Operator operator) {
-    Candidate_ptr result = malloc_(sizeof(Candidate), "create_candidate");
+    Candidate_ptr result = malloc_(sizeof(Candidate));
     result->name = str_copy(result->name, name);
     result->operator = operator;
     return result;
