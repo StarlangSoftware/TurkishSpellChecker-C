@@ -28483,7 +28483,7 @@ kaderci CL_ISIM
 kadercilik CL_ISIM IS_SD
 kaderiye CL_ISIM
 kadersiz IS_ADJ
-kadı CL_ISIM
+kadı CL_ISIM IS_OA
 kadıboğan CL_ISIM
 kadıköy IS_OA
 kadıköytaşı IS_BILEŞ CL_ISIM
@@ -41090,7 +41090,7 @@ nisyan CL_ISIM
 niş CL_ISIM
 nişaburek IS_SD CL_ISIM
 nişadır CL_ISIM
-nişan CL_ISIM
+nişan IS_OA CL_ISIM
 nişanbay IS_OA
 nişanbey IS_OA
 nişancı CL_ISIM

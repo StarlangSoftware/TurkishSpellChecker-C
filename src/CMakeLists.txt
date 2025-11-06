@@ -5,6 +5,7 @@ set(CMAKE_C_FLAGS "-O3")
 
 find_package(morphological_analysis_c REQUIRED)
 find_package(n_gram_c REQUIRED)
+find_package(corpus_c REQUIRED)
 
 add_library(SpellChecker
         Candidate.c
@@ -26,4 +27,4 @@ add_library(SpellChecker
         ContextBasedSpellChecker.h
         TrieBasedSpellChecker.c
         TrieBasedSpellChecker.h)
-target_link_libraries(SpellChecker morphological_analysis_c::morphological_analysis_c n_gram_c::n_gram_c)
+target_link_libraries(SpellChecker morphological_analysis_c::morphological_analysis_c n_gram_c::n_gram_c  corpus_c::corpus_c)

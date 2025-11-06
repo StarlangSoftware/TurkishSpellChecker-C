@@ -49,23 +49,23 @@ void free_n_gram_spell_checker(N_gram_spell_checker_ptr spell_checker) {
  * @param index Index of the word
  * @return If the word is misspelled, null; otherwise the longest root word of the possible analyses.
  */
-char * check_analysis_and_set_root_for_word_at_index(N_gram_spell_checker spell_checker,
+char * check_analysis_and_set_root_for_word_at_index(N_gram_spell_checker_ptr spell_checker,
                                                      Sentence_ptr sentence,
                                                      int index) {
     if (index < sentence->words->size) {
         char* word_name = array_list_get(sentence->words, index);
         Regular_expression_ptr regular1 = create_regular_expression(".*\\d+.*");
         Regular_expression_ptr regular2 = create_regular_expression(".*[a-zA-ZçöğüşıÇÖĞÜŞİ]+.*");
-        if ((full_matches(regular1, word_name) && full_matches(regular2, word_name) && str_contains(word_name, "'")) || word_size(word_name) < spell_checker.parameter->min_word_length) {
+        if ((full_matches(regular1, word_name) && full_matches(regular2, word_name) && str_contains(word_name, "'")) || word_size(word_name) < spell_checker->parameter->min_word_length) {
             free_regular_expression(regular1);
             free_regular_expression(regular2);
             return word_name;
         }
         free_regular_expression(regular1);
         free_regular_expression(regular2);
-        Fsm_parse_list_ptr parse_list1 = morphological_analysis(spell_checker.fsm, word_name);
+        Fsm_parse_list_ptr parse_list1 = morphological_analysis(spell_checker->fsm, word_name);
         if (parse_list1->fsm_parses->size != 0) {
-            if (spell_checker.parameter->root_n_gram) {
+            if (spell_checker->parameter->root_n_gram) {
                 char* result = get_parse_with_longest_root_word(parse_list1)->root->name;
                 free_fsm_parse_list(parse_list1);
                 return result;
@@ -75,10 +75,10 @@ char * check_analysis_and_set_root_for_word_at_index(N_gram_spell_checker spell_
         } else {
             free_fsm_parse_list(parse_list1);
             String_ptr upper_case_word_name = to_capital(word_name);
-            Fsm_parse_list_ptr parse_list2 = morphological_analysis(spell_checker.fsm, upper_case_word_name->s);
+            Fsm_parse_list_ptr parse_list2 = morphological_analysis(spell_checker->fsm, upper_case_word_name->s);
             free_string_ptr(upper_case_word_name);
             if (parse_list2->fsm_parses->size != 0) {
-                if (spell_checker.parameter->root_n_gram) {
+                if (spell_checker->parameter->root_n_gram) {
                     char* result = get_parse_with_longest_root_word(parse_list2)->root->name;
                     free_fsm_parse_list(parse_list2);
                     return result;
@@ -99,10 +99,10 @@ char * check_analysis_and_set_root_for_word_at_index(N_gram_spell_checker spell_
  * @param word Word to be analyzed.
  * @return If the word is misspelled, null; otherwise the longest root word of the possible analysis.
  */
-char *check_analysis_and_set_root(N_gram_spell_checker spell_checker, char *word) {
-    Fsm_parse_list_ptr parse_list1 = morphological_analysis(spell_checker.fsm, word);
+char *check_analysis_and_set_root(N_gram_spell_checker_ptr spell_checker, char *word) {
+    Fsm_parse_list_ptr parse_list1 = morphological_analysis(spell_checker->fsm, word);
     if (parse_list1->fsm_parses->size != 0) {
-        if (spell_checker.parameter->root_n_gram) {
+        if (spell_checker->parameter->root_n_gram) {
             char* result = get_parse_with_longest_root_word(parse_list1)->root->name;
             free_fsm_parse_list(parse_list1);
             return result;
@@ -113,10 +113,10 @@ char *check_analysis_and_set_root(N_gram_spell_checker spell_checker, char *word
     }
     free_fsm_parse_list(parse_list1);
     String_ptr upper_case_word_name = to_capital(word);
-    Fsm_parse_list_ptr parse_list2 = morphological_analysis(spell_checker.fsm, upper_case_word_name->s);
+    Fsm_parse_list_ptr parse_list2 = morphological_analysis(spell_checker->fsm, upper_case_word_name->s);
     free_string_ptr(upper_case_word_name);
     if (parse_list2->fsm_parses->size != 0) {
-        if (spell_checker.parameter->root_n_gram) {
+        if (spell_checker->parameter->root_n_gram) {
             char* result = get_parse_with_longest_root_word(parse_list2)->root->name;
             free_fsm_parse_list(parse_list2);
             return result;
@@ -145,7 +145,7 @@ char *check_analysis_and_set_root(N_gram_spell_checker spell_checker, char *word
  * @param sentence Sentence type input.
  * @return Sentence result.
  */
-Sentence_ptr spell_check_n_gram(N_gram_spell_checker spell_checker, Sentence_ptr sentence) {
+Sentence_ptr spell_check_n_gram(N_gram_spell_checker_ptr spell_checker, Sentence_ptr sentence) {
     char *word, *best_root, *previous_root = NULL, *root, *next_root;
     Candidate_ptr best_candidate;
     double previous_probability, next_probability, best_probability;
@@ -171,60 +171,60 @@ Sentence_ptr spell_check_n_gram(N_gram_spell_checker spell_checker, Sentence_ptr
         if (i < sentence->words->size - 2) {
             next_next_word = array_list_get(sentence->words, i + 2);
         }
-        if (forced_misspell_check(spell_checker.fsm, word, result)) {
+        if (forced_misspell_check(spell_checker->fsm, word, result)) {
             previous_root = check_analysis_and_set_root_for_word_at_index(spell_checker, result, result->words->size - 1);
             root = next_root;
             next_root = check_analysis_and_set_root_for_word_at_index(spell_checker, sentence, i + 2);
             continue;
         }
-        if (forced_backward_merge_check(spell_checker.merged_words, word, result, previous_word) ||
-            forced_suffix_merge_check(spell_checker.fsm, word, result, previous_word)) {
+        if (forced_backward_merge_check(spell_checker->merged_words, word, result, previous_word) ||
+            forced_suffix_merge_check(spell_checker->fsm, word, result, previous_word)) {
             previous_root = check_analysis_and_set_root_for_word_at_index(spell_checker, result, result->words->size - 1);
             root = check_analysis_and_set_root_for_word_at_index(spell_checker, sentence, i + 1);
             next_root = check_analysis_and_set_root_for_word_at_index(spell_checker, sentence, i + 2);
             continue;
         }
-        if (forced_forward_merge_check(spell_checker.merged_words, word, result, next_word) ||
-            forced_hyphen_merge_check(spell_checker.fsm, word, result, previous_word, next_word)) {
+        if (forced_forward_merge_check(spell_checker->merged_words, word, result, next_word) ||
+            forced_hyphen_merge_check(spell_checker->fsm, word, result, previous_word, next_word)) {
             i++;
             previous_root = check_analysis_and_set_root_for_word_at_index(spell_checker, result, result->words->size - 1);
             root = check_analysis_and_set_root_for_word_at_index(spell_checker, sentence, i + 1);
             next_root = check_analysis_and_set_root_for_word_at_index(spell_checker, sentence, i + 2);
             continue;
         }
-        if (forced_split_check(spell_checker.split_words, word, result) || forced_shortcut_check(word, result)) {
+        if (forced_split_check(spell_checker->split_words, word, result) || forced_shortcut_check(word, result)) {
             previous_root = check_analysis_and_set_root_for_word_at_index(spell_checker, result, result->words->size - 1);
             root = next_root;
             next_root = check_analysis_and_set_root_for_word_at_index(spell_checker, sentence, i + 2);
             continue;
         }
-        if (spell_checker.parameter->suffix_check) {
-            if (forced_de_da_split_check(spell_checker.fsm, word, result) || forced_question_suffix_split_check(spell_checker.fsm, word, result) || forced_suffix_split_check(spell_checker.fsm, word, result)) {
+        if (spell_checker->parameter->suffix_check) {
+            if (forced_de_da_split_check(spell_checker->fsm, word, result) || forced_question_suffix_split_check(spell_checker->fsm, word, result) || forced_suffix_split_check(spell_checker->fsm, word, result)) {
                 previous_root = check_analysis_and_set_root_for_word_at_index(spell_checker, result, result->words->size - 1);
                 root = next_root;
                 next_root = check_analysis_and_set_root_for_word_at_index(spell_checker, sentence, i + 2);
                 continue;
             }
         }
-        Fsm_parse_list_ptr parse_list = morphological_analysis(spell_checker.fsm, word);
+        Fsm_parse_list_ptr parse_list = morphological_analysis(spell_checker->fsm, word);
         if (root == NULL ||
-            (word_size(word) <= spell_checker.parameter->min_word_length && parse_list->fsm_parses->size == 0)) {
+            (word_size(word) <= spell_checker->parameter->min_word_length && parse_list->fsm_parses->size == 0)) {
             free_fsm_parse_list(parse_list);
             array_list_clear(candidates, (void (*)(void *)) free_candidate);
             if (root == NULL) {
                 free_array_list(candidates, (void (*)(void *)) free_candidate);
-                candidates = candidate_list_simple(spell_checker.fsm, word);
-                Array_list_ptr split_candidates = split_candidates_list(spell_checker.fsm, word);
+                candidates = candidate_list_simple(spell_checker->fsm, word);
+                Array_list_ptr split_candidates = split_candidates_list(spell_checker->fsm, word);
                 array_list_add_all(candidates, split_candidates);
                 free_array_list(split_candidates, NULL);
             }
-            Array_list_ptr mergedCandidates = merged_candidates_list(spell_checker.fsm, previous_word, word, next_word);
+            Array_list_ptr mergedCandidates = merged_candidates_list(spell_checker->fsm, previous_word, word, next_word);
             array_list_add_all(candidates, mergedCandidates);
             free_array_list(mergedCandidates, NULL);
             best_candidate = create_candidate(word, NO_CHANGE);
             best_root = word;
-            best_probability = spell_checker.parameter->threshold;
-            for (int j = 0; i < candidates->size; j++) {
+            best_probability = spell_checker->parameter->threshold;
+            for (int j = 0; j < candidates->size; j++) {
                 Candidate_ptr candidate = array_list_get(candidates, j);
                 if (candidate->operator == SPELL_CHECK || candidate->operator == MISSPELLED_REPLACE ||
                     candidate->operator == CONTEXT_BASED || candidate->operator == TRIE_BASED) {
@@ -252,7 +252,7 @@ Sentence_ptr spell_check_n_gram(N_gram_spell_checker spell_checker, Sentence_ptr
                         root = check_analysis_and_set_root(spell_checker, array_list_get(items, 0));
                         free_array_list(items, free_);
                     }
-                    previous_probability = get_probability(spell_checker.n_gram, 2, previous_root, root);
+                    previous_probability = get_probability(spell_checker->n_gram, 2, previous_root, root);
                 } else {
                     previous_probability = 0.0;
                 }
@@ -262,7 +262,7 @@ Sentence_ptr spell_check_n_gram(N_gram_spell_checker spell_checker, Sentence_ptr
                         root = check_analysis_and_set_root(spell_checker, array_list_get(items, 1));
                         free_array_list(items, free_);
                     }
-                    next_probability = get_probability(spell_checker.n_gram, 2, root, next_root);
+                    next_probability = get_probability(spell_checker->n_gram, 2, root, next_root);
                 } else {
                     next_probability = 0.0;
                 }
@@ -287,7 +287,7 @@ Sentence_ptr spell_check_n_gram(N_gram_spell_checker spell_checker, Sentence_ptr
             root = best_root;
         } else {
             free_fsm_parse_list(parse_list);
-            sentence_add_word(result, word);
+            sentence_add_word(result, clone_string(word));
         }
         previous_root = root;
         root = next_root;

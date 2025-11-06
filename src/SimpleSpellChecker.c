@@ -101,11 +101,13 @@ Array_list_ptr candidate_list_simple(Fsm_morphological_analyzer_ptr fsm, char *w
             array_list_add(candidates, create_candidate(firstCandidate->name, firstCandidate->operator));
         } else {
             char* newCandidate = get_correct_form(dictionary, firstCandidate->name);
-            Fsm_parse_list_ptr fsmParseList2 = morphological_analysis(fsm, newCandidate);
-            if (newCandidate != NULL && fsmParseList2->fsm_parses->size > 0){
-                array_list_add(candidates, create_candidate(newCandidate, MISSPELLED_REPLACE));
+            if (newCandidate != NULL) {
+                Fsm_parse_list_ptr fsmParseList2 = morphological_analysis(fsm, newCandidate);
+                if (fsmParseList2->fsm_parses->size > 0){
+                    array_list_add(candidates, create_candidate(newCandidate, MISSPELLED_REPLACE));
+                }
+                free_fsm_parse_list(fsmParseList2);
             }
-            free_fsm_parse_list(fsmParseList2);
         }
         free_fsm_parse_list(fsmParseList);
     }
@@ -358,8 +360,8 @@ bool forced_suffix_split_check(Fsm_morphological_analyzer_ptr fsm,
             parse_list = morphological_analysis(fsm, apostrophe_word->s);
             if (parse_list->fsm_parses->size > 0){
                 free_fsm_parse_list(parse_list);
-                free_string_ptr(apostrophe_word);
                 sentence_add_word(result, clone_string(apostrophe_word->s));
+                free_string_ptr(apostrophe_word);
                 return true;
             }
             free_fsm_parse_list(parse_list);
@@ -663,8 +665,10 @@ bool forced_shortcut_check(char *word, Sentence_ptr result) {
     for (j = 0; j < word_size(word); j++){
         String_ptr ch = char_at(word, j);
         if (!(strcmp(ch->s, "0") >= 0 && strcmp(ch->s, "9") <= 0) && !string_in_list(ch->s, (char*[]){".", ","}, 2)){
+            free_string_ptr(ch);
             break;
         }
+        free_string_ptr(ch);
     }
     if (j != 0 && j != word_size(word)){
         String_ptr first = substring(word, 0, j);
@@ -694,10 +698,12 @@ bool forced_shortcut_check(char *word, Sentence_ptr result) {
 Sentence_ptr spell_check_simple(Simple_spell_checker_ptr spell_checker, Sentence_ptr sentence) {
     char* word;
     char* new_word;
+    bool allocated;
     unsigned long random_candidate;
     Array_list_ptr candidates;
     Sentence_ptr result = create_sentence();
     for (int i = 0; i < sentence->words->size; i++) {
+        allocated = false;
         word = array_list_get(sentence->words, i);
         char* next_word = NULL;
         char* previous_word = NULL;
@@ -735,9 +741,14 @@ Sentence_ptr spell_check_simple(Simple_spell_checker_ptr spell_checker, Sentence
             if (candidates->size != 0) {
                 random_candidate = random() % candidates->size;
                 Candidate_ptr candidate = array_list_get(candidates, random_candidate);
-                new_word = candidate->name;
+                new_word = str_copy(new_word, candidate->name);
+                allocated = true;
                 if (candidate->operator == BACKWARD_MERGE){
                     sentence_replace_word(result, i - 1, clone_string(new_word));
+                    free_(new_word);
+                    free_array_list(candidates, (void (*)(void *)) free_candidate);
+                    free_fsm_parse_list(parse_list1);
+                    free_fsm_parse_list(parse_list2);
                     continue;
                 }
                 if (candidate->operator == FORWARD_MERGE){
@@ -745,6 +756,10 @@ Sentence_ptr spell_check_simple(Simple_spell_checker_ptr spell_checker, Sentence
                 }
                 if (candidate->operator == SPLIT){
                     add_split_words(new_word, result);
+                    free_(new_word);
+                    free_array_list(candidates, (void (*)(void *)) free_candidate);
+                    free_fsm_parse_list(parse_list1);
+                    free_fsm_parse_list(parse_list2);
                     continue;
                 }
             } else {
@@ -757,6 +772,9 @@ Sentence_ptr spell_check_simple(Simple_spell_checker_ptr spell_checker, Sentence
         free_fsm_parse_list(parse_list1);
         free_fsm_parse_list(parse_list2);
         sentence_add_word(result, clone_string(new_word));
+        if (allocated) {
+            free_(new_word);
+        }
     }
     return result;
 }
