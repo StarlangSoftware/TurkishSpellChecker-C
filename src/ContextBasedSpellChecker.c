@@ -153,7 +153,7 @@ Array_list_ptr candidate_list_context(Hash_map_ptr context_list, Fsm_morphologic
         char* w = array_list_get(sentence->words, i);
         Fsm_parse_list_ptr parse_list = morphological_analysis(fsm, w);
         if (parse_list->fsm_parses->size > 0){
-            char* root = get_parse_with_longest_root_word(parse_list)->root->name;
+            char* root = get_parse_with_longest_root_word(parse_list)->parse.root->name;
             if (hash_map_contains(context_list, root)){
                 Array_list_ptr context = hash_map_get(context_list, root);
                 for (int j = 0; j < context->size; j++){

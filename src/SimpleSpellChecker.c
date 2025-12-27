@@ -354,7 +354,7 @@ bool forced_suffix_split_check(Fsm_morphological_analyzer_ptr fsm,
         free_string_ptr(probable_suffix);
         char* lowercase = to_lowercase(probable_proper_noun->s);
         free_string_ptr(probable_proper_noun);
-        Txt_word_ptr  txt_word = get_word_txt(fsm->dictionary, lowercase);
+        Txt_word_ptr  txt_word = get_word((Dictionary_ptr) fsm->dictionary, lowercase);
         free_(lowercase);
         if (txt_word != NULL && is_proper_noun(txt_word)){
             parse_list = morphological_analysis(fsm, apostrophe_word->s);
@@ -401,7 +401,7 @@ bool forced_question_suffix_split_check(Fsm_morphological_analyzer_ptr fsm,
                 free_string_ptr(split_word_name);
                 return false;
             }
-            Txt_word_ptr root = get_word_txt(fsm->dictionary, get_parse_with_longest_root_word(parse_list)->root->name);
+            Txt_word_ptr root = get_word((Dictionary_ptr) fsm->dictionary, get_parse_with_longest_root_word(parse_list)->parse.root->name);
             if (!is_code(root)){
                 sentence_add_word(result, clone_string(split_word_name->s));
                 sentence_add_word(result, clone_string(question_suffix));
@@ -474,7 +474,7 @@ bool forced_de_da_split_check(Fsm_morphological_analyzer_ptr fsm,
             String_ptr new_word_name = substring(word, 0, word_size(word) - 2);
             Fsm_parse_list_ptr parse_list = morphological_analysis(fsm, new_word_name->s);
             char* lowercase = to_lowercase(new_word_name->s);
-            Txt_word_ptr txt_new_word = get_word_txt(fsm->dictionary, lowercase);
+            Txt_word_ptr txt_new_word = get_word((Dictionary_ptr) fsm->dictionary, lowercase);
             if (txt_new_word != NULL && is_proper_noun(txt_new_word)){
                 String_ptr new_word_name_capitalized = to_capital(new_word_name->s);
                 String_ptr tmp1 = create_string4(new_word_name_capitalized->s, "'", "da");
@@ -498,7 +498,7 @@ bool forced_de_da_split_check(Fsm_morphological_analyzer_ptr fsm,
                 return true;
             }
             if (parse_list->fsm_parses->size > 0){
-               txt_word  = get_word_txt(fsm->dictionary, get_parse_with_longest_root_word(parse_list)->root->name);
+               txt_word  = get_word((Dictionary_ptr) fsm->dictionary, get_parse_with_longest_root_word(parse_list)->parse.root->name);
             }
             if (txt_word != NULL && !is_code(txt_word)){
                 sentence_add_word(result, clone_string(new_word_name->s));

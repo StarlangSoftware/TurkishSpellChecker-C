@@ -66,7 +66,7 @@ char * check_analysis_and_set_root_for_word_at_index(N_gram_spell_checker_ptr sp
         Fsm_parse_list_ptr parse_list1 = morphological_analysis(spell_checker->fsm, word_name);
         if (parse_list1->fsm_parses->size != 0) {
             if (spell_checker->parameter->root_n_gram) {
-                char* result = get_parse_with_longest_root_word(parse_list1)->root->name;
+                char* result = get_parse_with_longest_root_word(parse_list1)->parse.root->name;
                 free_fsm_parse_list(parse_list1);
                 return result;
             }
@@ -79,7 +79,7 @@ char * check_analysis_and_set_root_for_word_at_index(N_gram_spell_checker_ptr sp
             free_string_ptr(upper_case_word_name);
             if (parse_list2->fsm_parses->size != 0) {
                 if (spell_checker->parameter->root_n_gram) {
-                    char* result = get_parse_with_longest_root_word(parse_list2)->root->name;
+                    char* result = get_parse_with_longest_root_word(parse_list2)->parse.root->name;
                     free_fsm_parse_list(parse_list2);
                     return result;
                 }
@@ -103,7 +103,7 @@ char *check_analysis_and_set_root(N_gram_spell_checker_ptr spell_checker, char *
     Fsm_parse_list_ptr parse_list1 = morphological_analysis(spell_checker->fsm, word);
     if (parse_list1->fsm_parses->size != 0) {
         if (spell_checker->parameter->root_n_gram) {
-            char* result = get_parse_with_longest_root_word(parse_list1)->root->name;
+            char* result = get_parse_with_longest_root_word(parse_list1)->parse.root->name;
             free_fsm_parse_list(parse_list1);
             return result;
         } else {
@@ -117,7 +117,7 @@ char *check_analysis_and_set_root(N_gram_spell_checker_ptr spell_checker, char *
     free_string_ptr(upper_case_word_name);
     if (parse_list2->fsm_parses->size != 0) {
         if (spell_checker->parameter->root_n_gram) {
-            char* result = get_parse_with_longest_root_word(parse_list2)->root->name;
+            char* result = get_parse_with_longest_root_word(parse_list2)->parse.root->name;
             free_fsm_parse_list(parse_list2);
             return result;
         } else {

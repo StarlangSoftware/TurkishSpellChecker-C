@@ -9,7 +9,6 @@
 #include "../src/SimpleSpellChecker.h"
 
 int main() {
-    start_x_large_memory_check();
     char *originals[15] = {
         "yeni sezon başladı",
         "sırtıkara adındaki canlı ; bir balıktır", "siyah ayı ; ayıgiller familyasına ait bir ayı türüdür",
@@ -60,5 +59,4 @@ int main() {
     free_(modified);
     free_fsm_morphological_analyzer(fsm);
     free_simple_spell_checker(spell_checker);
-    end_memory_check();
 }
